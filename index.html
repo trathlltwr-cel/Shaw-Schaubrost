@@ -402,6 +402,16 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   0%{transform:scale(1);opacity:1;}
   100%{transform:scale(1.6);opacity:0;}
 }
+/* حالة المراجعة */
+.review-icon{
+  font-size:72px;margin-bottom:20px;animation:bounce 2s infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-15px);}
+}
+.review-text h2{color:var(--paprika);}
+.review-text p{max-width:350px;}
 
 /* ============ READY SCREEN ============ */
 .ready-screen{
@@ -600,13 +610,26 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   <small>© 2026 شاو بروست. جميع الحقوق محفوظة.</small>
 </footer>
 
-<!-- WAITING SCREEN -->
+<!-- WAITING SCREEN - حالتين: مراجعة / QR -->
 <div class="waiting-screen" id="waitingScreen">
-  <div class="pulse-ring"></div>
-  <div class="qr-box" id="qrBox"></div>
-  <div class="order-num" id="waitingOrderNum">طلب رقم —</div>
-  <h2>استلم الطلب للجرسون</h2>
-  <p>اعرض QR الكود للجرسون عشان يسلّمك طلبك. لما يجهز هننبّهك!</p>
+  <div class="pulse-ring" id="waitingPulse"></div>
+  
+  <!-- حالة 1: الطلب قيد المراجعة (جديد) -->
+  <div id="reviewState">
+    <div class="review-icon">⏳</div>
+    <div class="review-text">
+      <h2>طلبك قيد المراجعة</h2>
+      <p>الجرسون بيراجع طلبك دلوقتي...<br>استنى شوية وهنظهرلك QR الكود</p>
+    </div>
+  </div>
+  
+  <!-- حالة 2: الطلب قيد التحضير (يظهر QR) -->
+  <div id="pickupState" style="display:none;">
+    <div class="qr-box" id="qrBox"></div>
+    <div class="order-num" id="waitingOrderNum">طلب رقم —</div>
+    <h2>استلم الطلب للجرسون</h2>
+    <p>اعرض QR الكود للجرسون عشان يسلّمك طلبك. لما يجهز هننبّهك!</p>
+  </div>
 </div>
 
 <!-- READY SCREEN -->
@@ -720,7 +743,7 @@ async function loadMenuFromSupabase(){
 
 let cart = [];
 let orderType = 'محلي';
-let receiptFileData = null; // {file, fileName, mimeType}
+let receiptFileData = null;
 let currentOrderId = null;
 let realtimeChannel = null;
 
@@ -735,23 +758,18 @@ function detectTableFromURL(){
 
   currentTable = table;
   tableLocked = true;
-
-  // اجبار نوع الطلب على "محلي" لأن العميل ماسح QR من على طاولته
   setOrderType('محلي');
 
-  // إخفاء خيار "سفري" لأن العميل أصلاً قاعد جوه الفرع
   const btnDelivery = document.getElementById('btnDelivery');
   btnDelivery.classList.add('locked');
   btnDelivery.disabled = true;
   btnDelivery.style.pointerEvents = 'none';
 
-  // تعبئة رقم الطاولة تلقائيًا ومنع التعديل
   const tableInput = document.getElementById('tableNum');
   tableInput.value = table;
   tableInput.readOnly = true;
   tableInput.placeholder = 'رقم الطاولة';
 
-  // شارة توضح رقم الطاولة أعلى السلة
   const badge = document.createElement('div');
   badge.className = 'order-ref-badge';
   badge.innerHTML = `<span>🪑 أنت على</span><b>طاولة رقم ${table}</b>`;
@@ -889,7 +907,6 @@ function closeCart(){
 
 /* ============ نوع الطلب ============ */
 function setOrderType(type){
-  // لو الطاولة متعرّفة من QR، امنع التحويل لـ "سفري"
   if(tableLocked && type==='سفري') return;
   orderType = type;
   document.getElementById('btnLocal').classList.toggle('active', type==='محلي');
@@ -930,7 +947,6 @@ function resetReceiptField(){
 function generateOrderQR(orderId, orderNumber){
   const qrBox = document.getElementById('qrBox');
   qrBox.innerHTML = '';
-  // QR يحتوي على رابط للجرسون يفتح صفحة تأكيد استلام الطلب
   const qrData = `${window.location.origin}${window.location.pathname}?staff=confirm&order_id=${orderId}`;
   new QRCode(qrBox, {
     text: qrData,
@@ -940,16 +956,34 @@ function generateOrderQR(orderId, orderNumber){
     colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.H
   });
-  document.getElementById('waitingOrderNum').textContent = `طلب رقم ${orderNumber}`;
 }
 
-/* ============ WAITING SCREEN ============ */
-function showWaitingScreen(orderId, orderNumber){
+/* ============ WAITING SCREEN - حالتين ============ */
+function showWaitingScreen(orderId, orderNumber, status){
   currentOrderId = orderId;
-  generateOrderQR(orderId, orderNumber);
+  document.getElementById('waitingOrderNum').textContent = 'طلب رقم ' + orderNumber;
   document.getElementById('waitingScreen').classList.add('active');
-  // ابدأ الاستماع لتغيير حالة الطلب
+  updateWaitingState(status);
   startRealtimeListener(orderId);
+}
+
+function updateWaitingState(status){
+  const reviewState = document.getElementById('reviewState');
+  const pickupState = document.getElementById('pickupState');
+  const pulse = document.getElementById('waitingPulse');
+  
+  if(status === 'قيد التحضير'){
+    reviewState.style.display = 'none';
+    pickupState.style.display = 'block';
+    pulse.style.display = 'block';
+    if(document.getElementById('qrBox').innerHTML === ''){
+      generateOrderQR(currentOrderId, document.getElementById('waitingOrderNum').textContent.replace('طلب رقم ', ''));
+    }
+  } else {
+    reviewState.style.display = 'block';
+    pickupState.style.display = 'none';
+    pulse.style.display = 'block';
+  }
 }
 
 function hideWaitingScreen(){
@@ -962,9 +996,7 @@ function showReadyScreen(){
   hideWaitingScreen();
   const ready = document.getElementById('readyScreen');
   ready.classList.add('active');
-  // شغل صوت التنبيه
   playReadySound();
-  // بعد 8 ثواني أعيد تعيين كل شيء
   setTimeout(() => {
     ready.classList.remove('active');
     resetFullApp();
@@ -975,11 +1007,6 @@ function playReadySound(){
   try {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const ctx = new AudioContext();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    // نغمة سعيدة: دو-ري-مي-فا-صول
     const notes = [523.25, 587.33, 659.25, 698.46, 783.99];
     const now = ctx.currentTime;
     notes.forEach((freq, i) => {
@@ -1001,16 +1028,21 @@ function playReadySound(){
 
 /* ============ REALTIME LISTENER ============ */
 function startRealtimeListener(orderId){
-  // نستخدم Server-Sent Events (SSE) عشان Realtime في Supabase
   const url = `${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=status,order_number`;
   
-  // طريقة بديلة: polling كل 3 ثواني
   realtimeChannel = setInterval(async () => {
     try {
       const res = await fetch(url, { headers });
       if(!res.ok) return;
       const data = await res.json();
-      if(data.length > 0 && data[0].status === 'جاهز'){
+      if(data.length === 0) return;
+      
+      const status = data[0].status;
+      
+      if(status === 'قيد التحضير'){
+        updateWaitingState('قيد التحضير');
+      }
+      else if(status === 'جاهز'){
         showReadyScreen();
       }
     } catch(e) {
@@ -1034,13 +1066,11 @@ async function submitOrder(){
   const table = currentTable || document.getElementById('tableNum').value.trim();
   const address = document.getElementById('address').value.trim();
 
-  // الاسم والتلفون مطلوبين بس للتوصيل (سفري)
   if(orderType==='سفري'){
     if(!name){ alert('من فضلك اكتب اسمك'); return; }
     if(!phone){ alert('من فضلك اكتب رقم الجوال'); return; }
     if(!address){ alert('من فضلك اكتب عنوان التوصيل'); return; }
   }
-  // للمحلي: رقم الطاولة مطلوب
   if(orderType==='محلي' && !table){ alert('من فضلك اكتب رقم الطاولة'); return; }
   if(!receiptFileData){ alert('من فضلك أرفق صورة إشعار التحويل'); return; }
 
@@ -1049,7 +1079,6 @@ async function submitOrder(){
   btn.disabled = true; btn.textContent = 'جاري رفع الإشعار...';
 
   try{
-    // 1) رفع صورة إشعار التحويل لمخزن Supabase Storage
     const path = `${Date.now()}_${receiptFileData.fileName}`;
     const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/receipts/${path}`, {
       method:'POST',
@@ -1068,7 +1097,6 @@ async function submitOrder(){
 
     btn.textContent = 'جاري إرسال الطلب...';
 
-    // 2) إدراج الطلب في جدول orders
     const orderPayload = {
       order_type: orderType,
       customer_name: orderType==='سفري' ? name : null,
@@ -1097,7 +1125,6 @@ async function submitOrder(){
     const orderId = orderData[0].id;
     const orderNumber = orderData[0].order_number;
 
-    // 3) إدراج عناصر الطلب في جدول order_items
     const items = cart.map(c=>({
       order_id: orderId,
       item_name: c.name,
@@ -1120,17 +1147,15 @@ async function submitOrder(){
       console.error('فشل إدراج عناصر الطلب: ' + (errText || itemsRes.status));
     }
 
-    // 4) لو طلب محلي → شاشة الانتظار مع QR
     if(orderType === 'محلي'){
       closeCart();
-      showWaitingScreen(orderId, orderNumber);
-      showToast(`تم استلام طلبك رقم ${orderNumber}! استلم QR للجرسون`);
+      showWaitingScreen(orderId, orderNumber, 'جديد');
+      showToast(`تم استلام طلبك رقم ${orderNumber}! استنى مراجعة الجرسون`);
     } else {
       showToast(`تم استلام طلبك يا ${name} بنجاح!`);
       setTimeout(closeCart, 1600);
     }
 
-    // 5) نظف السلة والفورم
     cart = []; renderCart();
     if(orderType==='سفري'){
       document.getElementById('custName').value='';
@@ -1149,33 +1174,22 @@ async function submitOrder(){
 
 /* ============ إعادة تعيين كاملة ============ */
 function resetFullApp(){
-  // أوقف الاستماع
   stopRealtimeListener();
   currentOrderId = null;
-  
-  // نظف السلة
   cart = [];
   renderCart();
-  
-  // نظف الفورم
   document.getElementById('custName').value='';
   document.getElementById('custPhone').value='';
   document.getElementById('address').value='';
   if(!tableLocked) document.getElementById('tableNum').value='';
   resetReceiptField();
-  
-  // رجع نوع الطلب للمحلي
-  if(!tableLocked){
-    setOrderType('محلي');
-  }
-  
-  // تأكد إن الشاشات مخفية
+  if(!tableLocked) setOrderType('محلي');
   document.getElementById('waitingScreen').classList.remove('active');
   document.getElementById('readyScreen').classList.remove('active');
-  
-  // رجع للأعلى
+  document.getElementById('reviewState').style.display = 'block';
+  document.getElementById('pickupState').style.display = 'none';
+  document.getElementById('qrBox').innerHTML = '';
   window.scrollTo({top:0, behavior:'smooth'});
-  
   showToast('جاهز لطلب جديد! 🍗');
 }
 
