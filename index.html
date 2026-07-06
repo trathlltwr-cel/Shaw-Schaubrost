@@ -386,6 +386,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   .features,.steps{grid-template-columns:1fr;}
 }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -542,8 +543,12 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
     <div id="cartItems"></div>
 
     <div class="drawer-form">
-      <input type="text" id="custName" placeholder="اسمك الكامل">
-      <input type="tel" id="custPhone" placeholder="رقم الجوال">
+      <div class="field-group show" id="deliveryOnlyFields">
+        <div>
+          <input type="text" id="custName" placeholder="اسمك الكامل">
+          <input type="tel" id="custPhone" placeholder="رقم الجوال">
+        </div>
+      </div>
       <div class="field-group" id="localFields">
         <div>
           <input type="text" id="tableNum" placeholder="رقم الطاولة (اختياري)">
@@ -792,6 +797,7 @@ function setOrderType(type){
   document.getElementById('btnDelivery').classList.toggle('active', type==='سفري');
   document.getElementById('localFields').classList.toggle('show', type==='محلي');
   document.getElementById('deliveryFields').classList.toggle('show', type==='سفري');
+  document.getElementById('deliveryOnlyFields').classList.toggle('show', type==='سفري');
 }
 
 /* ============ إرفاق صورة إشعار التحويل ============ */
@@ -829,9 +835,14 @@ async function submitOrder(){
   const table = currentTable || document.getElementById('tableNum').value.trim();
   const address = document.getElementById('address').value.trim();
 
-  if(!name){ alert('من فضلك اكتب اسمك'); return; }
-  if(!phone){ alert('من فضلك اكتب رقم الجوال'); return; }
-  if(orderType==='سفري' && !address){ alert('من فضلك اكتب عنوان التوصيل'); return; }
+  // الاسم والتلفون مطلوبين بس للتوصيل (سفري)
+  if(orderType==='سفري'){
+    if(!name){ alert('من فضلك اكتب اسمك'); return; }
+    if(!phone){ alert('من فضلك اكتب رقم الجوال'); return; }
+    if(!address){ alert('من فضلك اكتب عنوان التوصيل'); return; }
+  }
+  // للمحلي: رقم الطاولة مطلوب
+  if(orderType==='محلي' && !table){ alert('من فضلك اكتب رقم الطاولة'); return; }
   if(!receiptFileData){ alert('من فضلك أرفق صورة إشعار التحويل'); return; }
 
   const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
@@ -861,8 +872,8 @@ async function submitOrder(){
     // 2) إدراج الطلب في جدول orders
     const orderPayload = {
       order_type: orderType,
-      customer_name: name,
-      customer_phone: phone,
+      customer_name: orderType==='سفري' ? name : null,
+      customer_phone: orderType==='سفري' ? phone : null,
       table_number: orderType==='محلي' && table ? table : null,
       delivery_address: orderType==='سفري' ? address : null,
       total: total,
@@ -911,10 +922,12 @@ async function submitOrder(){
 
     showToast(`تم استلام طلبك يا ${name} بنجاح!`);
     cart = []; renderCart();
-    document.getElementById('custName').value='';
-    document.getElementById('custPhone').value='';
+    if(orderType==='سفري'){
+      document.getElementById('custName').value='';
+      document.getElementById('custPhone').value='';
+      document.getElementById('address').value='';
+    }
     if(!tableLocked) document.getElementById('tableNum').value='';
-    document.getElementById('address').value='';
     resetReceiptField();
     setTimeout(closeCart, 1600);
   }catch(err){
