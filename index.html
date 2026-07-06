@@ -6,6 +6,7 @@
 <title>شاو بروست | بروست مقرمش، طعم ما بتنسى</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
   --bg:#170a12;
@@ -20,6 +21,8 @@
   --magenta:#b3175f;
   --magenta-deep:#7a0f42;
   --shadow:0 20px 50px rgba(0,0,0,.45);
+  --success:#2ecc71;
+  --success-dark:#27ae60;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -362,6 +365,84 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
 .confirm-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(245,148,31,.4);}
 .confirm-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
+/* ============ ORDER WAITING SCREEN ============ */
+.waiting-screen{
+  position:fixed;inset:0;z-index:400;
+  background:var(--bg);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 20px;text-align:center;
+}
+.waiting-screen.active{display:flex;}
+.waiting-screen .qr-box{
+  background:var(--panel);border:2px solid var(--gold);border-radius:24px;
+  padding:30px;margin-bottom:30px;box-shadow:var(--shadow);
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+.waiting-screen .qr-box canvas, .waiting-screen .qr-box img{
+  border-radius:12px;background:#fff;padding:12px;
+}
+.waiting-screen h2{
+  font-family:'Lalezar',cursive;font-size:32px;color:var(--gold-soft);margin-bottom:12px;
+}
+.waiting-screen p{color:var(--muted);font-size:16px;line-height:1.8;max-width:400px;}
+.waiting-screen .order-num{
+  background:var(--panel-alt);border:1px solid var(--line);border-radius:12px;
+  padding:10px 24px;margin:16px 0;font-size:18px;color:var(--gold-soft);font-weight:700;
+}
+.waiting-screen .pulse-ring{
+  width:80px;height:80px;border-radius:50%;
+  border:3px solid var(--gold);margin-bottom:20px;
+  animation:pulseRing 2s infinite;
+}
+@keyframes pulseRing{
+  0%{transform:scale(1);opacity:1;}
+  100%{transform:scale(1.6);opacity:0;}
+}
+
+/* ============ READY SCREEN ============ */
+.ready-screen{
+  position:fixed;inset:0;z-index:500;
+  background:linear-gradient(135deg, #1a4d2e 0%, #2ecc71 50%, #1a4d2e 100%);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 20px;text-align:center;
+  animation:readyPulse 2s ease-in-out infinite;
+}
+.ready-screen.active{display:flex;}
+@keyframes readyPulse{
+  0%,100%{filter:brightness(1);}
+  50%{filter:brightness(1.15);}
+}
+.ready-screen h1{
+  font-family:'Lalezar',cursive;font-size:clamp(48px,10vw,90px);color:#fff;
+  text-shadow:0 4px 20px rgba(0,0,0,.3);margin-bottom:20px;
+  animation:readyBounce 1s ease infinite;
+}
+@keyframes readyBounce{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+}
+.ready-screen p{
+  font-size:24px;color:rgba(255,255,255,.9);margin-bottom:40px;font-weight:600;
+}
+.ready-screen .checkmark{
+  width:120px;height:120px;border-radius:50%;
+  background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;
+  font-size:60px;margin-bottom:30px;animation:checkPop .6s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes checkPop{
+  0%{transform:scale(0) rotate(-30deg);}
+  100%{transform:scale(1) rotate(0);}
+}
+.ready-screen .timer-bar{
+  position:absolute;bottom:0;left:0;height:6px;background:rgba(255,255,255,.5);
+  width:100%;animation:timerShrink 8s linear forwards;
+}
+@keyframes timerShrink{to{width:0;}}
+
 /* toast */
 .toast{
   position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
@@ -384,9 +465,9 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   .hero p{margin:0 auto 34px;}
   .hero-ctas{justify-content:center;}
   .features,.steps{grid-template-columns:1fr;}
+  .waiting-screen .qr-box{padding:20px;}
 }
 </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -519,6 +600,23 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   <small>© 2026 شاو بروست. جميع الحقوق محفوظة.</small>
 </footer>
 
+<!-- WAITING SCREEN -->
+<div class="waiting-screen" id="waitingScreen">
+  <div class="pulse-ring"></div>
+  <div class="qr-box" id="qrBox"></div>
+  <div class="order-num" id="waitingOrderNum">طلب رقم —</div>
+  <h2>استلم الطلب للجرسون</h2>
+  <p>اعرض QR الكود للجرسون عشان يسلّمك طلبك. لما يجهز هننبّهك!</p>
+</div>
+
+<!-- READY SCREEN -->
+<div class="ready-screen" id="readyScreen">
+  <div class="checkmark">✓</div>
+  <h1>طلبك جاهز!</h1>
+  <p>استمتع بوجبتك المقرمشة 🍗</p>
+  <div class="timer-bar"></div>
+</div>
+
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-head">
@@ -579,7 +677,6 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
 
 <script>
 /* ============ إعدادات Supabase ============ */
-/* عوّض القيمتين دول ببيانات مشروعك في Supabase (Project Settings > API) */
 const SUPABASE_URL = "https://zhxzrmrnhjdcmqzjigkk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpoeHpybXJuaGpkY21xemppZ2trIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxOTAwMjgsImV4cCI6MjA5ODc2NjAyOH0.RepSFwT5LmGeM5Jor8IyScLIQfM2scvEKJRKsVPmcOI";
 
@@ -624,6 +721,8 @@ async function loadMenuFromSupabase(){
 let cart = [];
 let orderType = 'محلي';
 let receiptFileData = null; // {file, fileName, mimeType}
+let currentOrderId = null;
+let realtimeChannel = null;
 
 /* ============ استقبال رقم الطاولة من رابط QR ============ */
 let currentTable = null;
@@ -827,6 +926,106 @@ function resetReceiptField(){
   document.getElementById('receiptLabelText').textContent = '📎 إرفاق إشعار التحويل';
 }
 
+/* ============ QR CODE ============ */
+function generateOrderQR(orderId, orderNumber){
+  const qrBox = document.getElementById('qrBox');
+  qrBox.innerHTML = '';
+  // QR يحتوي على رابط للجرسون يفتح صفحة تأكيد استلام الطلب
+  const qrData = `${window.location.origin}${window.location.pathname}?staff=confirm&order_id=${orderId}`;
+  new QRCode(qrBox, {
+    text: qrData,
+    width: 200,
+    height: 200,
+    colorDark: '#170a12',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  document.getElementById('waitingOrderNum').textContent = `طلب رقم ${orderNumber}`;
+}
+
+/* ============ WAITING SCREEN ============ */
+function showWaitingScreen(orderId, orderNumber){
+  currentOrderId = orderId;
+  generateOrderQR(orderId, orderNumber);
+  document.getElementById('waitingScreen').classList.add('active');
+  // ابدأ الاستماع لتغيير حالة الطلب
+  startRealtimeListener(orderId);
+}
+
+function hideWaitingScreen(){
+  document.getElementById('waitingScreen').classList.remove('active');
+  stopRealtimeListener();
+}
+
+/* ============ READY SCREEN ============ */
+function showReadyScreen(){
+  hideWaitingScreen();
+  const ready = document.getElementById('readyScreen');
+  ready.classList.add('active');
+  // شغل صوت التنبيه
+  playReadySound();
+  // بعد 8 ثواني أعيد تعيين كل شيء
+  setTimeout(() => {
+    ready.classList.remove('active');
+    resetFullApp();
+  }, 8000);
+}
+
+function playReadySound(){
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    // نغمة سعيدة: دو-ري-مي-فا-صول
+    const notes = [523.25, 587.33, 659.25, 698.46, 783.99];
+    const now = ctx.currentTime;
+    notes.forEach((freq, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.frequency.value = freq;
+      o.type = 'sine';
+      g.gain.setValueAtTime(0.3, now + i * 0.15);
+      g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.15 + 0.3);
+      o.start(now + i * 0.15);
+      o.stop(now + i * 0.15 + 0.3);
+    });
+  } catch(e) {
+    console.log('Audio not supported');
+  }
+}
+
+/* ============ REALTIME LISTENER ============ */
+function startRealtimeListener(orderId){
+  // نستخدم Server-Sent Events (SSE) عشان Realtime في Supabase
+  const url = `${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=status,order_number`;
+  
+  // طريقة بديلة: polling كل 3 ثواني
+  realtimeChannel = setInterval(async () => {
+    try {
+      const res = await fetch(url, { headers });
+      if(!res.ok) return;
+      const data = await res.json();
+      if(data.length > 0 && data[0].status === 'جاهز'){
+        showReadyScreen();
+      }
+    } catch(e) {
+      console.error('Polling error:', e);
+    }
+  }, 3000);
+}
+
+function stopRealtimeListener(){
+  if(realtimeChannel){
+    clearInterval(realtimeChannel);
+    realtimeChannel = null;
+  }
+}
+
 /* ============ تأكيد الطلب -> Supabase ============ */
 async function submitOrder(){
   if(cart.length===0) return;
@@ -896,6 +1095,7 @@ async function submitOrder(){
     }
     const orderData = await orderRes.json();
     const orderId = orderData[0].id;
+    const orderNumber = orderData[0].order_number;
 
     // 3) إدراج عناصر الطلب في جدول order_items
     const items = cart.map(c=>({
@@ -920,7 +1120,17 @@ async function submitOrder(){
       console.error('فشل إدراج عناصر الطلب: ' + (errText || itemsRes.status));
     }
 
-    showToast(`تم استلام طلبك يا ${name} بنجاح!`);
+    // 4) لو طلب محلي → شاشة الانتظار مع QR
+    if(orderType === 'محلي'){
+      closeCart();
+      showWaitingScreen(orderId, orderNumber);
+      showToast(`تم استلام طلبك رقم ${orderNumber}! استلم QR للجرسون`);
+    } else {
+      showToast(`تم استلام طلبك يا ${name} بنجاح!`);
+      setTimeout(closeCart, 1600);
+    }
+
+    // 5) نظف السلة والفورم
     cart = []; renderCart();
     if(orderType==='سفري'){
       document.getElementById('custName').value='';
@@ -929,13 +1139,44 @@ async function submitOrder(){
     }
     if(!tableLocked) document.getElementById('tableNum').value='';
     resetReceiptField();
-    setTimeout(closeCart, 1600);
   }catch(err){
     showToast('حصل خطأ، حاول تاني بعد لحظات');
     console.error(err);
   }finally{
     btn.disabled = false; btn.textContent='تأكيد الطلب';
   }
+}
+
+/* ============ إعادة تعيين كاملة ============ */
+function resetFullApp(){
+  // أوقف الاستماع
+  stopRealtimeListener();
+  currentOrderId = null;
+  
+  // نظف السلة
+  cart = [];
+  renderCart();
+  
+  // نظف الفورم
+  document.getElementById('custName').value='';
+  document.getElementById('custPhone').value='';
+  document.getElementById('address').value='';
+  if(!tableLocked) document.getElementById('tableNum').value='';
+  resetReceiptField();
+  
+  // رجع نوع الطلب للمحلي
+  if(!tableLocked){
+    setOrderType('محلي');
+  }
+  
+  // تأكد إن الشاشات مخفية
+  document.getElementById('waitingScreen').classList.remove('active');
+  document.getElementById('readyScreen').classList.remove('active');
+  
+  // رجع للأعلى
+  window.scrollTo({top:0, behavior:'smooth'});
+  
+  showToast('جاهز لطلب جديد! 🍗');
 }
 
 function showToast(msg){
