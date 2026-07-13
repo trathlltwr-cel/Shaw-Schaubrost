@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اسم المطعم | اسم المطعم، طعم ما بتنسى</title>
+<title>مذاق+ | مذاق+، طعم ما بتنسى</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
-  --bg:#170a12;
-  --panel:#26101d;
-  --panel-alt:#35162a;
-  --gold:#f0c77e;
-  --gold-soft:#f6dba0;
-  --paprika:#f5941f;
-  --cream:#f6ead6;
-  --muted:#cda9c0;
-  --line:rgba(240,199,126,.16);
-  --magenta:#b3175f;
-  --magenta-deep:#7a0f42;
+  --bg:#0b0906;
+  --panel:#17120d;
+  --panel-alt:#221a13;
+  --gold:#d4a24c;
+  --gold-soft:#e8c98a;
+  --paprika:#b3382c;
+  --cream:#f5f5f7;
+  --muted:#b8a99a;
+  --line:rgba(212,162,76,.18);
+  --magenta:#b3382c;
+  --magenta-deep:#7a2019;
   --shadow:0 20px 50px rgba(0,0,0,.45);
   --success:#2ecc71;
   --success-dark:#27ae60;
@@ -32,15 +32,15 @@ body{
   font-family:'Cairo',sans-serif;
   overflow-x:hidden;
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(179,23,95,.14), transparent 42%),
-    radial-gradient(circle at 85% 15%, rgba(245,148,31,.07), transparent 45%),
-    radial-gradient(circle at 75% 85%, rgba(179,23,95,.1), transparent 50%);
+    radial-gradient(circle at 15% 20%, rgba(179,56,44,.12), transparent 42%),
+    radial-gradient(circle at 85% 15%, rgba(212,162,76,.06), transparent 45%),
+    radial-gradient(circle at 75% 85%, rgba(179,56,44,.08), transparent 50%);
 }
 .display{font-family:'Lalezar',cursive;}
 a{color:inherit;text-decoration:none;}
 ul{list-style:none;}
 img{max-width:100%;display:block;}
-::selection{background:var(--gold);color:#170a12;}
+::selection{background:var(--gold);color:#0b0906;}
 
 /* scrollbar */
 ::-webkit-scrollbar{width:8px;}
@@ -56,7 +56,7 @@ header{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
   padding:16px 5%;
-  background:rgba(23,15,12,.65);
+  background:rgba(10,10,13,.65);
   backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line);
   transition:padding .3s ease, background .3s ease;
@@ -79,13 +79,13 @@ nav ul li a:hover{color:var(--gold-soft);}
 nav ul li a:hover::after{transform:scaleX(1);}
 .cart-btn{
   display:flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,var(--gold),#c9852f);
-  color:#1a1109;font-weight:700;border:none;border-radius:30px;
+  background:linear-gradient(135deg,var(--gold),#8a6a2e);
+  color:#1f1508;font-weight:700;border:none;border-radius:30px;
   padding:10px 20px;cursor:pointer;font-family:'Cairo',sans-serif;
   position:relative;transition:transform .25s ease, box-shadow .25s ease;
-  box-shadow:0 6px 18px rgba(240,199,126,.25);
+  box-shadow:0 6px 18px rgba(212,162,76,.25);
 }
-.cart-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 10px 26px rgba(240,199,126,.4);}
+.cart-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 10px 26px rgba(212,162,76,.4);}
 .cart-count{
   background:var(--paprika);color:#fff;font-size:12px;min-width:20px;height:20px;
   border-radius:50%;display:flex;align-items:center;justify-content:center;
@@ -108,7 +108,7 @@ nav ul li a:hover::after{transform:scaleX(1);}
 .eyebrow{
   display:inline-flex;align-items:center;gap:8px;color:var(--gold-soft);
   border:1px solid var(--line);padding:6px 16px;border-radius:30px;font-size:14px;margin-bottom:22px;
-  background:rgba(240,199,126,.06);
+  background:rgba(212,162,76,.06);
 }
 .hero h1{
   font-size:clamp(42px,6vw,74px);line-height:1.15;color:var(--cream);margin-bottom:20px;
@@ -127,12 +127,12 @@ nav ul li a:hover::after{transform:scaleX(1);}
   font-family:'Cairo',sans-serif;transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
 }
 .btn-primary{
-  background:linear-gradient(135deg,var(--paprika),#9c2f1c);color:#fff;
-  box-shadow:0 10px 26px rgba(245,148,31,.35);
+  background:linear-gradient(135deg,var(--paprika),#7a2019);color:#fff;
+  box-shadow:0 10px 26px rgba(179,56,44,.35);
 }
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(245,148,31,.5);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(179,56,44,.5);}
 .btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--gold-soft);}
-.btn-ghost:hover{border-color:var(--gold);background:rgba(240,199,126,.08);transform:translateY(-3px);}
+.btn-ghost:hover{border-color:var(--gold);background:rgba(212,162,76,.08);transform:translateY(-3px);}
 
 /* bucket illustration */
 .hero-visual{flex:1;min-width:280px;display:flex;justify-content:center;position:relative;}
@@ -140,7 +140,7 @@ nav ul li a:hover::after{transform:scaleX(1);}
   position:absolute;width:380px;height:380px;border-radius:50%;
   border:1px dashed var(--line);animation:spin 40s linear infinite;
 }
-.ring.r2{width:440px;height:440px;border-color:rgba(179,23,95,.3);animation-duration:60s;animation-direction:reverse;}
+.ring.r2{width:440px;height:440px;border-color:rgba(179,56,44,.3);animation-duration:60s;animation-direction:reverse;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .spice{
   position:absolute;width:6px;height:6px;background:var(--paprika);border-radius:50%;
@@ -149,18 +149,18 @@ nav ul li a:hover::after{transform:scaleX(1);}
 .bucket-wrap{position:relative;width:260px;height:300px;z-index:2;}
 .bucket{
   position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  width:220px;height:160px;
-  background:linear-gradient(160deg,var(--paprika),#8f2a17);
-  border-radius:14px 14px 40px 40px;
-  box-shadow:var(--shadow), inset 0 -12px 20px rgba(0,0,0,.25);
+  width:180px;height:190px;
+  background:linear-gradient(165deg, var(--gold-soft), var(--gold) 55%, #8a6a2e 100%);
+  clip-path:polygon(18% 0%, 82% 0%, 100% 100%, 0% 100%);
+  box-shadow:var(--shadow), inset 0 -14px 22px rgba(0,0,0,.28);
 }
-.bucket::before{
-  content:'اسم المطعم';font-family:'Lalezar',cursive;color:var(--gold-soft);
-  position:absolute;top:16px;left:0;right:0;text-align:center;font-size:15px;letter-spacing:1px;
+.bucket::after{
+  content:'';position:absolute;left:10%;right:10%;bottom:18%;height:2px;
+  background:rgba(0,0,0,.18);box-shadow:0 26px 0 rgba(0,0,0,.14), 0 52px 0 rgba(0,0,0,.1);
 }
 .piece{
   position:absolute;border-radius:50% 50% 45% 45%/60% 60% 40% 40%;
-  background:radial-gradient(circle at 35% 30%, #e3b45a, #b9852f 70%);
+  background:radial-gradient(circle at 35% 30%, #e8b073, var(--paprika) 70%);
   box-shadow:inset -6px -6px 10px rgba(0,0,0,.25), 0 6px 10px rgba(0,0,0,.3);
 }
 .p1{width:90px;height:70px;top:-38px;right:20px;transform:rotate(-8deg);}
@@ -196,7 +196,7 @@ nav ul li a:hover::after{transform:scaleX(1);}
 .feature-card:hover{transform:translateY(-8px);border-color:var(--gold);box-shadow:var(--shadow);}
 .feature-icon{
   width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;
-  background:rgba(240,199,126,.12);font-size:26px;margin-bottom:20px;
+  background:rgba(212,162,76,.12);font-size:26px;margin-bottom:20px;
   transition:transform .4s ease;
 }
 .feature-card:hover .feature-icon{transform:rotate(-8deg) scale(1.08);}
@@ -210,7 +210,7 @@ nav ul li a:hover::after{transform:scaleX(1);}
   background:transparent;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:600;font-size:14.5px;
   transition:all .3s ease;
 }
-.tab.active,.tab:hover{background:var(--gold);color:#1a1109;border-color:var(--gold);}
+.tab.active,.tab:hover{background:var(--gold);color:#1f1508;border-color:var(--gold);}
 .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:24px;}
 .menu-loading, .menu-empty{
   grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 20px;font-size:15px;
@@ -223,7 +223,7 @@ nav ul li a:hover::after{transform:scaleX(1);}
 .item-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
 .item-thumb{
   height:150px;display:flex;align-items:center;justify-content:center;font-size:56px;
-  background:radial-gradient(circle at 30% 20%, rgba(240,199,126,.18), transparent 60%), var(--panel-alt);
+  background:radial-gradient(circle at 30% 20%, rgba(212,162,76,.18), transparent 60%), var(--panel-alt);
   position:relative;overflow:hidden;
 }
 .item-thumb img{width:100%;height:100%;object-fit:cover;}
@@ -237,11 +237,11 @@ nav ul li a:hover::after{transform:scaleX(1);}
 .item-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
 .price{color:var(--gold-soft);font-weight:800;font-size:16px;}
 .add-btn{
-  background:rgba(240,199,126,.12);border:1px solid var(--line);color:var(--gold-soft);
+  background:rgba(212,162,76,.12);border:1px solid var(--line);color:var(--gold-soft);
   width:38px;height:38px;border-radius:50%;font-size:20px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:all .3s ease;
 }
-.add-btn:hover{background:var(--gold);color:#1a1109;transform:rotate(90deg);}
+.add-btn:hover{background:var(--gold);color:#1f1508;transform:rotate(90deg);}
 .add-btn.added{background:var(--paprika);color:#fff;border-color:var(--paprika);}
 
 /* ============ HOW IT WORKS ============ */
@@ -249,9 +249,9 @@ nav ul li a:hover::after{transform:scaleX(1);}
 .step{text-align:center;padding:0 10px;}
 .step-num{
   width:64px;height:64px;border-radius:50%;margin:0 auto 20px;
-  background:linear-gradient(135deg,var(--gold),#c9852f);color:#1a1109;
+  background:linear-gradient(135deg,var(--gold),#8a6a2e);color:#1f1508;
   display:flex;align-items:center;justify-content:center;font-family:'Lalezar',cursive;font-size:24px;
-  box-shadow:0 10px 24px rgba(240,199,126,.3);
+  box-shadow:0 10px 24px rgba(212,162,76,.3);
 }
 .step h4{font-size:18px;color:var(--gold-soft);margin-bottom:8px;}
 .step p{color:var(--muted);font-size:14px;line-height:1.8;}
@@ -304,7 +304,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--cream);
   cursor:pointer;transition:all .25s ease;
 }
-.qty-ctrl button:hover{background:var(--gold);color:#1a1109;}
+.qty-ctrl button:hover{background:var(--gold);color:#1f1508;}
 .empty-cart{text-align:center;color:var(--muted);padding:60px 10px;font-size:14.5px;}
 
 .order-ref-badge{
@@ -328,7 +328,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   border:1.5px dashed var(--line);border-radius:14px;padding:20px 14px;cursor:pointer;
   color:var(--muted);font-size:14px;transition:all .3s ease;text-align:center;
 }
-.receipt-upload:hover{border-color:var(--gold);color:var(--gold-soft);background:rgba(240,199,126,.06);}
+.receipt-upload:hover{border-color:var(--gold);color:var(--gold-soft);background:rgba(212,162,76,.06);}
 .receipt-upload.has-file{border-style:solid;border-color:var(--gold);}
 .receipt-upload img{
   max-width:100%;max-height:160px;border-radius:10px;display:none;
@@ -340,7 +340,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   flex:1;padding:10px;border-radius:26px;border:none;background:transparent;color:var(--muted);
   font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .3s ease;
 }
-.order-type-switch button.active{background:var(--gold);color:#1a1109;box-shadow:0 6px 16px rgba(240,199,126,.3);}
+.order-type-switch button.active{background:var(--gold);color:#1f1508;box-shadow:0 6px 16px rgba(212,162,76,.3);}
 .order-type-switch button.locked{opacity:.45;cursor:not-allowed;}
 
 .drawer-form{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
@@ -358,11 +358,11 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
 .total-row{display:flex;justify-content:space-between;color:var(--cream);font-size:15px;margin-bottom:16px;}
 .total-row b{color:var(--gold-soft);font-size:19px;}
 .confirm-btn{
-  width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--paprika),#9c2f1c);
+  width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--paprika),#7a2019);
   color:#fff;font-weight:800;font-size:16px;cursor:pointer;font-family:'Cairo',sans-serif;
   transition:transform .3s ease, box-shadow .3s ease;position:relative;overflow:hidden;
 }
-.confirm-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(245,148,31,.4);}
+.confirm-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(179,56,44,.4);}
 .confirm-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
 /* ============ ORDER WAITING SCREEN ============ */
@@ -453,6 +453,45 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
 }
 @keyframes timerShrink{to{width:0;}}
 
+/* ============ INTRO SPLASH ============ */
+.intro-screen{
+  position:fixed;inset:0;z-index:900;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(179,56,44,.25), transparent 55%),
+    radial-gradient(circle at 70% 70%, rgba(212,162,76,.2), transparent 55%),
+    var(--bg);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  transition:opacity .7s ease, visibility .7s ease;
+}
+.intro-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.intro-mark{
+  width:90px;height:auto;margin-bottom:18px;
+  opacity:0;transform:scale(.6);
+  animation:introMarkIn .8s .1s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+.intro-name{
+  font-family:'Lalezar',cursive;font-size:clamp(40px,9vw,64px);color:var(--cream);
+  opacity:0;transform:translateY(14px);
+  animation:introTextIn .8s .35s ease forwards;
+}
+.intro-name span{color:var(--gold);}
+.intro-tagline{
+  color:var(--muted);font-size:15px;letter-spacing:2px;margin-top:10px;
+  opacity:0;animation:introTextIn .8s .6s ease forwards;
+}
+.intro-bar{
+  width:140px;height:3px;border-radius:10px;margin-top:26px;overflow:hidden;
+  background:rgba(255,255,255,.08);
+}
+.intro-bar::after{
+  content:'';display:block;height:100%;width:0%;
+  background:linear-gradient(90deg,var(--gold),var(--paprika));
+  animation:introBarFill 1.4s .2s ease forwards;
+}
+@keyframes introMarkIn{to{opacity:1;transform:scale(1);}}
+@keyframes introTextIn{to{opacity:1;transform:translateY(0);}}
+@keyframes introBarFill{to{width:100%;}}
+
 /* toast */
 .toast{
   position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
@@ -462,7 +501,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast .tick{
-  width:26px;height:26px;border-radius:50%;background:var(--gold);color:#1a1109;
+  width:26px;height:26px;border-radius:50%;background:var(--gold);color:#1f1508;
   display:flex;align-items:center;justify-content:center;font-weight:800;
 }
 
@@ -481,6 +520,17 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
 </head>
 <body>
 
+<div class="intro-screen" id="introScreen">
+  <svg class="intro-mark" viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M120 14c-22-10-52 2-52 28c0 20 18 32 36 26c13-4 17-18 7-25c-8-6-18 1-14 11" fill="none" stroke="var(--paprika)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="98" cy="52" r="7" fill="var(--paprika)"/>
+    <path d="M10 102c34-24 70 22 104-2c26-18 50 6 80-14l14 14c-32 22-58-4-86 14c-36 22-70-22-104 2c-8 5-14-8-8-14z" fill="var(--gold)"/>
+  </svg>
+  <div class="intro-name">مذاق<span>+</span></div>
+  <div class="intro-tagline">طعم ما بتنسى</div>
+  <div class="intro-bar"></div>
+</div>
+
 <header id="siteHeader">
   <div class="logo">
     <svg class="brand-mark" viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -488,7 +538,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
       <circle cx="98" cy="52" r="7" fill="var(--paprika)"/>
       <path d="M10 102c34-24 70 22 104-2c26-18 50 6 80-14l14 14c-32 22-58-4-86 14c-36 22-70-22-104 2c-8 5-14-8-8-14z" fill="var(--gold)"/>
     </svg>
-    <span class="logo-text"><span class="logo-en">nem </span><span class="logo-ar">اسم المطعم</span></span>
+    <span class="logo-text"><span class="logo-en">MATHAQ+</span><span class="logo-ar">مذاق+</span></span>
   </div>
   <nav><ul id="navList">
     <li><a href="#home">الرئيسية</a></li>
@@ -508,7 +558,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
   <div class="hero-inner">
     <div class="hero-text reveal">
       <span class="eyebrow">🔥 مقرمش من أول قطعة</span>
-      <h1>بروست <span class="accent">مقرمش</span><br>طعم ما بتنسى</h1>
+      <h1><span class="accent">مذاق+</span><br>طعم ما بتنسى</h1>
       <p>دجاج طازة، توابل سرّية، وقرمشة ما بتلقاها في أي مكان تاني. اطلب دلوقتي محلي من الفرع أو توصيل لباب بيتك.</p>
       <div class="hero-ctas">
         <button class="btn-primary" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">شوف القائمة 🍗</button>
@@ -527,7 +577,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
 
 <section class="section">
   <div class="section-head reveal">
-    <span class="eyebrow">ليه اسم المطعم</span>
+    <span class="eyebrow">ليه مذاق+</span>
     <h2>قرمشة ما بتتنازل عنها</h2>
     <p>كل قطعة بتتحضر بعناية من أول لحظة لحد ما توصل لطاولتك أو باب بيتك</p>
   </div>
@@ -571,7 +621,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
 <section class="section" id="how">
   <div class="section-head reveal">
     <span class="eyebrow">بسيط وسريع</span>
-    <h2>كيف تطلب من اسم المطعم</h2>
+    <h2>كيف تطلب من مذاق+</h2>
   </div>
   <div class="steps">
     <div class="step reveal">
@@ -599,7 +649,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
       <circle cx="98" cy="52" r="7" fill="var(--paprika)"/>
       <path d="M10 102c34-24 70 22 104-2c26-18 50 6 80-14l14 14c-32 22-58-4-86 14c-36 22-70-22-104 2c-8 5-14-8-8-14z" fill="var(--gold)"/>
     </svg>
-    nem 
+    مذاق+
   </div>
   <p>مفتوح يوميًا من الساعة 12 ظهرًا حتى 1 فجرًا</p>
   <div class="foot-links">
@@ -607,7 +657,7 @@ footer small{display:block;margin-top:20px;color:#7d6a58;font-size:13px;}
     <a href="#menu">القائمة</a>
     <a href="#how">كيف تطلب</a>
   </div>
-  <small>© 2026 اسم المطعم. جميع الحقوق محفوظة.</small>
+  <small>© 2026 مذاق+. جميع الحقوق محفوظة.</small>
 </footer>
 
 <!-- WAITING SCREEN - حالتين: مراجعة / QR -->
@@ -952,7 +1002,7 @@ function generateOrderQR(orderId, orderNumber){
     text: qrData,
     width: 200,
     height: 200,
-    colorDark: '#170a12',
+    colorDark: '#0b0906',
     colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.H
   });
@@ -1215,6 +1265,16 @@ window.addEventListener('scroll', ()=>{
 document.querySelectorAll('#navList a').forEach(a=>a.addEventListener('click',()=>{
   document.getElementById('navList').classList.remove('open');
 }));
+
+/* ============ إخفاء شاشة الدخول ============ */
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    const intro = document.getElementById('introScreen');
+    if(!intro) return;
+    intro.classList.add('hide');
+    setTimeout(()=>intro.remove(), 800);
+  }, 1900);
+});
 
 /* ============ تشغيل كاشف رقم الطاولة وتحميل القائمة ============ */
 detectTableFromURL();
